@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detector - AI Powered Emotion Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            padding: 16px;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        textarea::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: rgba(255,255,255,0.9);
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 60px;
+            display: none;
+        }
+
+        .result-box.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-box b {
+            color: #f093fb;
+            font-weight: 700;
+        }
+
+        .emotion-bars {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .emotion-bars.visible {
+            display: block;
+        }
+
+        .emotion-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 12px;
+        }
+
+        .emotion-label {
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            width: 70px;
+            text-transform: capitalize;
+        }
+
+        .bar-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .bar-anger { background: linear-gradient(90deg, #f12711, #f5af19); }
+        .bar-disgust { background: linear-gradient(90deg, #11998e, #38ef7d); }
+        .bar-fear { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+        .bar-joy { background: linear-gradient(90deg, #f7971e, #ffd200); }
+        .bar-sadness { background: linear-gradient(90deg, #a18cd1, #fbc2eb); }
+
+        .bar-value {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            width: 40px;
+            text-align: right;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon">🧠</div>
+            <div>
+                <h1>Emotion Detector</h1>
+                <p class="subtitle">Powered by Watson NLP AI</p>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="textInput">Enter your text</label>
+            <textarea
+                id="textInput"
+                placeholder="Type something like 'I am so happy today!' or 'This makes me really angry...'"
+            ></textarea>
+            <p class="error-msg" id="errorMsg">⚠ Please enter some text before analysing.</p>
+        </div>
+
+        <button id="analyzeBtn" onclick="analyzeEmotion()">Analyse Emotions</button>
+
+        <div class="result-box" id="resultBox"></div>
+
+        <div class="emotion-bars" id="emotionBars">
+            <div class="emotion-row">
+                <span class="emotion-label">Anger</span>
+                <div class="bar-bg"><div class="bar-fill bar-anger" id="barAnger" style="width:0%"></div></div>
+                <span class="bar-value" id="valAnger">0%</span>
+            </div>
+            <div class="emotion-row">
+                <span class="emotion-label">Disgust</span>
+                <div class="bar-bg"><div class="bar-fill bar-disgust" id="barDisgust" style="width:0%"></div></div>
+                <span class="bar-value" id="valDisgust">0%</span>
+            </div>
+            <div class="emotion-row">
+                <span class="emotion-label">Fear</span>
+                <div class="bar-bg"><div class="bar-fill bar-fear" id="barFear" style="width:0%"></div></div>
+                <span class="bar-value" id="valFear">0%</span>
+            </div>
+            <div class="emotion-row">
+                <span class="emotion-label">Joy</span>
+                <div class="bar-bg"><div class="bar-fill bar-joy" id="barJoy" style="width:0%"></div></div>
+                <span class="bar-value" id="valJoy">0%</span>
+            </div>
+            <div class="emotion-row">
+                <span class="emotion-label">Sadness</span>
+                <div class="bar-bg"><div class="bar-fill bar-sadness" id="barSadness" style="width:0%"></div></div>
+                <span class="bar-value" id="valSadness">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='mywebscript.js') }}"></script>
+</body>
+</html>

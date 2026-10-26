@@ -1,31 +1,22 @@
 """
 Unit tests for the emotion_detector function.
-Uses unittest.mock to simulate Watson NLP API responses
-so tests pass without requiring network access to the IBM Skills Network.
+Uses unittest.mock to simulate Watson NLP API responses.
 """
-
 import unittest
 from unittest.mock import patch, MagicMock
 from EmotionDetection.emotion_detection import emotion_detector
-
 
 def make_mock_response(emotion_scores, status_code=200):
     """Helper to create a mock requests.Response object."""
     mock_resp = MagicMock()
     mock_resp.status_code = status_code
     mock_resp.json.return_value = {
-        "emotionPredictions": [
-            {
-                "emotion": emotion_scores
-            }
-        ]
+        "emotionPredictions": [{"emotion": emotion_scores}]
     }
     return mock_resp
 
-
 class TestEmotionDetector(unittest.TestCase):
     """Test cases for the emotion_detector function."""
-
     @patch('EmotionDetection.emotion_detection.requests.post')
     def test_joy_for_joyful_statement(self, mock_post):
         """Test that joy is the dominant emotion for a joyful statement."""
@@ -75,7 +66,6 @@ class TestEmotionDetector(unittest.TestCase):
         })
         result = emotion_detector("I am really scared about this")
         self.assertEqual(result['dominant_emotion'], 'fear')
-
 
 if __name__ == '__main__':
     unittest.main()
